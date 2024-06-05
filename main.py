@@ -12,11 +12,13 @@ lms = FilterLMS(num_taps=ORDER)
 
 out = []
 errs = []
+yhats = []
 
 for i in range(0, len(x)):
-    if (i % fs == 0):
+    if i % fs == 0:
         print(i)
-    yhat, err = lms.filter(x[i], y[i])
+    yhat, err = lms.filter(y[i], x[i])
+    yhats.append(yhat)
     out.append(x[i] - yhat)
     errs.append(err)
 

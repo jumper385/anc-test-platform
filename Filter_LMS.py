@@ -2,7 +2,7 @@ import numpy as np
 from collections import deque
 
 class FilterLMS:
-    def __init__(self, num_taps=1024, lr=0.001):
+    def __init__(self, num_taps=1024, lr=0.4):
         self.learning_rate = lr
         self.num_taps = num_taps
         self.weights = np.zeros(num_taps)
@@ -10,6 +10,17 @@ class FilterLMS:
         self.x_buff = np.zeros(num_taps)
 
     def filter(self, x, y):
+        """
+        For noise canceling applications, you want the target (y) to be the noisy signal and the input noise to be the noise reference. This is because, we're estimateing the amplitude of the noise reference within the noise signal NOT extracting the noise signal from the noise"
+
+        Parameters:
+            x (float): Sample of noise reference
+            y (float): Sample of the noisy signal
+
+        Returns:
+            yhat (float): The estimated noise in y
+            err (float): The error of the sample
+        """
         # Shift the buffer and insert the new sample
         self.x_buff = np.roll(self.x_buff, -1)
         self.x_buff[-1] = x
