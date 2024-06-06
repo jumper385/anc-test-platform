@@ -5,9 +5,10 @@ from scipy.io import wavfile
 from Filter_LMS import FilterLMS
 
 fs, y = wavfile.read('noise_ref.wav')
-fs, x = wavfile.read('noisy.wav')
+fs, target = wavfile.read('orig.wav')
+x = target + 3 * y
 
-ORDER = int(fs * 0.1)
+ORDER = int(fs * 0.01)
 lms = FilterLMS(num_taps=ORDER)
 
 out = []
@@ -27,9 +28,10 @@ out_array = np.array((out - np.min(out))/(np.max(out) - np.min(out)), dtype=np.f
 wavfile.write('cleaned.wav', fs, out_array)
 
 fig, ax = plt.subplots(2)
-ax[0].plot(x)
-ax[0].plot(out)
+ax[0].plot(x, label="noisy")
+ax[0].plot(target, label="target")
+ax[0].plot(out, label="cleaned")
 
-ax[1].plot(errs)
+ax[1].plot((target - out_array) ** 2)
 
 plt.show()
